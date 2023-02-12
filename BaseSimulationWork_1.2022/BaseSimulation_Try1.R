@@ -18,6 +18,8 @@ load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/Connectivi
 
 #remove VIR10 from 2018 since we have a 2020 one, i.e. row 63
 benthicfish_masterdataset <- wcsonly_benthicfish_jointsiteyrsonly_20172020_abridged[-63,]
+#removing NS3 because the connectivity for that site is wrong since the coordinates were/are wrong
+benthicfish_masterdataset <- benthicfish_masterdataset[-47,]
 
 #convert herbivore abundance to a number between 0->1 by assigning 1 to the largest herbivore abundance recorded in the Fijian MERMAID database (as of 11.25.2021, out of 657 sample events, from Emily)
 #look at: https://labs.eemb.ucsb.edu/burkepile/deron/research/herbivory-herbivore-diversity-and-ecosystem-function
@@ -37,8 +39,8 @@ sitevector <- benthicfish_masterdataset$site
 #coral connectivity matrix
 load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/weightedavgconnmat.RData") 
 #^weightedavgconnmat - for all sites
-#subset it to only the 76 sites with both benthic cover and fish abundance data
-load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.11.2022.RData") #newcoordinates; abridged coordinate file that corresponds with conn mat above, site order-wise
+#subset it to only the 75 sites with both benthic cover and fish abundance data
+load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.25.2022.RData") #newcoordinates; abridged coordinate file that corresponds with conn mat above, site order-wise
 coordinates <- newcoordinates
 jointsite_rows <- which(coordinates$site %in% sitevector)
 jointsite_coral_weightedavgconnmat <- weightedavgconnmat[jointsite_rows, jointsite_rows]
@@ -107,6 +109,9 @@ mumbytrajectories <- data.frame(reefnum = rep(1:length(sitevector), each = npoin
     }
   #return(mumbytrajectories)
 #}
+    
+#all of the 1.25.2022 are for after removing NS3    
+save(out, file = "~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/fullsimrun_smallmalgPLD_1.25.2022.RData")
 
 #save(out, file = "~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/firstfullsimrun_1.12.2022.RData")
 #error message: DLSODE-  At current T (=R1), MXSTEP (=I1) steps   
@@ -128,7 +133,9 @@ mumbytrajectories <- data.frame(reefnum = rep(1:length(sitevector), each = npoin
 #save(out, file = "~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/thirdfullsimrun_1.12.2022.RData") #14.73496 min, no error messages, not going over 1 anymore!
 
 #save(out, file = "~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/fullsimrun_smallmalgPLD_1.13.2022.RData") #14.467 min, no error messages, not going over 1 anymore!
-load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/fullsimrun_smallmalgPLD_1.13.2022.RData")
+
+
+load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/fullsimrun_smallmalgPLD_1.25.2022.RData")
 
 for(i in 1:length(sitevector)){ 
   mumbytrajectories$M[mumbytrajectories$reefnum == i] <- out[,(i+1)]
@@ -154,7 +161,8 @@ worldmap <- map_data ("world", wrap = c(0, 360))
 
 #initial coral cover
 #BaseRun_InitialCoralCover_1.13.2022 - 3rd full sim run 1.12.2022
-BaseRun_smallmalg_InitialCoralCover_1.13.2022 <-  
+#BaseRun_smallmalg_InitialCoralCover_1.13.2022
+BaseRun_smallmalg_InitialCoralCover_1.25.2022 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Initial Coral Cover, Base Run"))+
@@ -167,11 +175,12 @@ BaseRun_smallmalg_InitialCoralCover_1.13.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun_smallmalg_InitialCoralCover_1.13.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_InitialCoralCover_1.13.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun_smallmalg_InitialCoralCover_1.25.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_InitialCoralCover_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 #final coral cover
 #BaseRun_FinalCoralCover_1.13.2022
-BaseRun_smallmalg_FinalCoralCover_1.13.2022 <-  
+#BaseRun_smallmalg_FinalCoralCover_1.13.2022
+BaseRun_smallmalg_FinalCoralCover_1.25.2022 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Final Coral Cover, Base Run"))+
@@ -184,11 +193,12 @@ BaseRun_smallmalg_FinalCoralCover_1.13.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun_smallmalg_FinalCoralCover_1.13.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_FinalCoralCover_1.13.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun_smallmalg_FinalCoralCover_1.25.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_FinalCoralCover_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 #initial malg cover
 #BaseRun_InitialMalgCover_1.13.2022
-BaseRun_smallmalg_InitialMalgCover_1.13.2022 <-  
+#BaseRun_smallmalg_InitialMalgCover_1.13.2022
+BaseRun_smallmalg_InitialMalgCover_1.25.2022 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Initial Malg Cover, Base Run"))+
@@ -201,11 +211,12 @@ BaseRun_smallmalg_InitialMalgCover_1.13.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun_smallmalg_InitialMalgCover_1.13.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_InitialMalgCover_1.13.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun_smallmalg_InitialMalgCover_1.25.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_InitialMalgCover_1.252022.png"), bg = "transparent", height = 10, width = 10)
 
 #final malg cover
 #BaseRun_FinalMalgCover_1.13.2022
-BaseRun_smallmalg_FinalMalgCover_1.13.2022 <-  
+#BaseRun_smallmalg_FinalMalgCover_1.13.2022
+BaseRun_smallmalg_FinalMalgCover_1.25.2022 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Final Malg Cover, Base Run"))+
@@ -218,11 +229,12 @@ BaseRun_smallmalg_FinalMalgCover_1.13.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun_smallmalg_FinalMalgCover_1.13.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_FinalMalgCover_1.13.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun_smallmalg_FinalMalgCover_1.25.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_smallmalg_FinalMalgCover_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 
 #grazing level
-BaseRun_GrazingLevelsUsed_1.13.2022 <-  
+#BaseRun_GrazingLevelsUsed_1.13.2022
+BaseRun_GrazingLevelsUsed_1.25.2022 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("GrazingLevelsUsed, Base Run"))+
@@ -235,7 +247,7 @@ BaseRun_GrazingLevelsUsed_1.13.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun_GrazingLevelsUsed_1.13.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_GrazingLevelsUsed_1.13.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun_GrazingLevelsUsed_1.25.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun_GrazingLevelsUsed_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 
 

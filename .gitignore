@@ -1,7 +1,7 @@
-*.dbf
-*.png
-*.prj
-*.shp
-*.shx
-*.rds
-*.RData
+**/*.dbf
+**/*.prj
+**/*.shp
+**/*.shx
+**/*.rds
+**/*.RData
+**/*.png

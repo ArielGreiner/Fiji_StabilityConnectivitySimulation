@@ -18,6 +18,9 @@ load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/Connectivi
 
 #remove VIR10 from 2018 since we have a 2020 one, i.e. row 63
 benthicfish_masterdataset <- wcsonly_benthicfish_jointsiteyrsonly_20172020_abridged[-63,]
+#removing NS3 because the connectivity for that site is wrong since the coordinates were/are wrong
+benthicfish_masterdataset <- benthicfish_masterdataset[-47,]
+
 
 #convert herbivore abundance to a number between 0->1 by assigning 1 to the largest herbivore abundance recorded in the Fijian MERMAID database (as of 11.25.2021, out of 657 sample events, from Emily)
 #look at: https://labs.eemb.ucsb.edu/burkepile/deron/research/herbivory-herbivore-diversity-and-ecosystem-function
@@ -46,8 +49,8 @@ sitevector <- benthicfish_masterdataset$site
 #coral connectivity matrix
 load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/weightedavgconnmat.RData") 
 #^weightedavgconnmat - for all sites
-#subset it to only the 76 sites with both benthic cover and fish abundance data
-load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.11.2022.RData") #newcoordinates; abridged coordinate file that corresponds with conn mat above, site order-wise
+#subset it to only the 75 sites with both benthic cover and fish abundance data
+load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.25.2022.RData") #newcoordinates; abridged coordinate file that corresponds with conn mat above, site order-wise
 coordinates <- newcoordinates
 jointsite_rows <- which(coordinates$site %in% sitevector)
 jointsite_coral_weightedavgconnmat <- weightedavgconnmat[jointsite_rows, jointsite_rows]
@@ -134,7 +137,7 @@ for(i in 1:length(sitevector)){
   benthic_traj$final_malgcover[benthic_traj$site == sitevector[i]] <- mumbytrajectories$M[mumbytrajectories$reefnum == i][npoints]
   benthic_traj$final_turfcover[benthic_traj$site == sitevector[i]] <- mumbytrajectories$Tu[mumbytrajectories$reefnum == i][npoints]
 }
-save(out, mumbytrajectories, benthic_traj, file = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/fullsimrun_scalingfactor",j,"_1.18.2022.RData"))
+save(out, mumbytrajectories, benthic_traj, file = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/fullsimrun_scalingfactor",j,"_1.25.2022.RData"))
 
 
 #Well let's plot this out 
@@ -154,7 +157,7 @@ BaseRun2_multigraz_InitialCoralCover <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun2_multigraz_InitialCoralCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_InitialCoralCover_ScalingFactor",j,".png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun2_multigraz_InitialCoralCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_InitialCoralCover_ScalingFactor",j,"_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 #final coral cover
 BaseRun2_multigraz_FinalCoralCover <-  
@@ -170,7 +173,7 @@ BaseRun2_multigraz_FinalCoralCover <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun2_multigraz_FinalCoralCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_FinalCoralCover_ScalingFactor",j,".png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun2_multigraz_FinalCoralCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_FinalCoralCover_ScalingFactor",j,"_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 #initial malg cover
 BaseRun2_multigraz_InitialMalgCover <-  
@@ -186,7 +189,7 @@ BaseRun2_multigraz_InitialMalgCover <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun2_multigraz_InitialMalgCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_InitialMalgCover_ScalingFactor",j,".png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun2_multigraz_InitialMalgCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_InitialMalgCover_ScalingFactor",j,"_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 #final malg cover
 BaseRun2_multigraz_FinalMalgCover <-  
@@ -202,7 +205,7 @@ BaseRun2_multigraz_FinalMalgCover <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun2_multigraz_FinalMalgCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_FinalMalgCover_ScalingFactor",j,".png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun2_multigraz_FinalMalgCover, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_FinalMalgCover_ScalingFactor",j,"_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 
 #grazing level
@@ -219,7 +222,7 @@ BaseRun2_multigraz_GrazingLevelsUsed <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(BaseRun2_multigraz_GrazingLevelsUsed, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_GrazingLevelsUsed_ScalingFactor",j,".png"), bg = "transparent", height = 10, width = 10)
+ggsave(BaseRun2_multigraz_GrazingLevelsUsed, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/BaseRun2_multigraz/BaseRun2_multigraz_GrazingLevelsUsed_ScalingFactor",j,"_1.25.2022.png"), bg = "transparent", height = 10, width = 10)
 
 }
 
@@ -246,14 +249,57 @@ ZeroGrazingLevels <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(ZeroGrazingLevels, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/ZeroGrazingLevels_1.20.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(ZeroGrazingLevels, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/ZeroGrazingLevels_1.25.2022.png"), bg = "transparent", height = 10, width = 10) #used to be 1.20.2022
+
+#looking at ranges of grazing level values seen post-scaling #1.25.2022: didn't redo these histograms
+hist(benthicfish_masterdataset$grazinglevel*scalingfactors[1])
+hist(benthicfish_masterdataset$grazinglevel*scalingfactors[2])
+hist(benthicfish_masterdataset$grazinglevel*scalingfactors[3])
+hist(benthicfish_masterdataset$grazinglevel*scalingfactors[4])
+
+quantile(benthicfish_masterdataset$grazinglevel*scalingfactors[1])
+#0%        25%        50%        75%       100% 
+#0.00000000 0.00000000 0.01216528 0.04464416 0.98524785 
+quantile(benthicfish_masterdataset$grazinglevel*scalingfactors[2])
+#0%       25%       50%       75%      100% 
+#0.0000000 0.0000000 0.1000000 0.3669801 8.0988506 
+quantile(benthicfish_masterdataset$grazinglevel*scalingfactors[3])
+#0%      25%      50%      75%     100% 
+#0.00000  0.00000  0.30000  1.10094 24.29655
+quantile(benthicfish_masterdataset$grazinglevel*scalingfactors[4])
+#0%       25%       50%       75%      100% 
+#0.000000  0.000000  0.500000  1.834901 40.494253 
 
 
+###looking at detritivore herbivore densities
 
-
-
-
-
-
-
+#only the >2016 herbivore data from wcs fiji sites 
+#save(wcsonly_fiji_fishbelt_current, file = here("Fish Belt Vis","2021_fishbelt_thesisproject", "wcsonly_current_fiji_herbivoredata.RData"))
+load("~/GitHub/WCSFiji2020Internship/Fiji-status/Fish Belt Vis/2021_fishbelt_thesisproject/wcsonly_current_fiji_herbivoredata.RData")
+benthicfish_masterdataset_detherbs <- benthicfish_masterdataset
+wcsonly_fiji_fishbelt_current_jointsitesonly <- wcsonly_fiji_fishbelt_current[wcsonly_fiji_fishbelt_current$site %in% sitevector,]
+wcsonly_fiji_fishbelt_current_jointsitesonly <- wcsonly_fiji_fishbelt_current_jointsitesonly[-10,] #removing VIR10 2018
+#are the sites in the same order? no
+setequal(wcsonly_fiji_fishbelt_current_jointsitesonly$site, benthicfish_masterdataset_detherbs$site)
+wcsonly_fiji_fishbelt_current_jointsitesonly$site %in% benthicfish_masterdataset_detherbs$site #(all TRUE both ways)
+wcsonly_fiji_fishbelt_current_jointsitesonly %>%
+  distinct(site) #only 75 distinct sites, two KB17 data points (keep the more recent one, aka the 2020 one)
+wcsonly_fiji_fishbelt_current_jointsitesonly <- wcsonly_fiji_fishbelt_current_jointsitesonly[-17,]
+wcsonly_fiji_fishbelt_current_jointsitesonly_abr <- wcsonly_fiji_fishbelt_current_jointsitesonly %>%
+  select(site, biomass_kgha_trophic_group_avg_herbivore_detritivore)
+benthicfish_masterdataset_detherbs <- merge(benthicfish_masterdataset_detherbs, wcsonly_fiji_fishbelt_current_jointsitesonly_abr, by = "site")
+#5172.61 is the max detritivore density recorded
+largest_detherbabundance <- 5172.61
+benthicfish_masterdataset_detherbs$det_grazinglevel <- benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_detritivore/largest_detherbabundance
+benthicfish_masterdataset_detherbs$malg_density <- benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_macroalgae
+benthicfish_masterdataset_detherbs$malg_density[is.na(benthicfish_masterdataset_detherbs$malg_density)] <- 0
+benthicfish_masterdataset_detherbs$comb_grazinglevel <- (benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_detritivore + benthicfish_masterdataset_detherbs$malg_density)/(largest_detherbabundance+largest_malgherbabundance)
+hist(benthicfish_masterdataset_detherbs$det_grazinglevel) #1.25.2022: didn't re-save when removed NS3
+quantile(benthicfish_masterdataset_detherbs$det_grazinglevel)
+#0%         25%         50%         75%        100% 
+#0.002780028 0.029169027 0.043956533 0.073889197 0.347366223 
+hist(benthicfish_masterdataset_detherbs$comb_grazinglevel) #1.25.2022: didn't re-save when removed NS3
+quantile(benthicfish_masterdataset_detherbs$comb_grazinglevel)
+#0%         25%         50%         75%        100% 
+#0.002330291 0.027875285 0.042770911 0.074997702 0.366447078
 

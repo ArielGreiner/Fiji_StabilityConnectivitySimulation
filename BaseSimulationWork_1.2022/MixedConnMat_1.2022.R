@@ -7,10 +7,11 @@ library(ggplot2)
 library(viridis)
 
 #This will basically be a rehash of MakingConnMat_11.2021.R and MakingMixedConnMat_12.2021, just starting off by removing the duplicate sites. 
-dupsites <- c("NAOBF2","NAOBF3", "NAOBF4", "NAOBT1", "NAOBT2", "NAOBT3", "VIR1")
+dupsites <- c("NAOBF2","NAOBF3", "NAOBF4", "NAOBT1", "NAOBT2", "NAOBT3", "VIR1", "NS3")
 #Will leave NT1 and NS3 for now, since they are two separate sites even if they have the exact same latitude/longitude coordinates
 #Yash changed the info for them on mermaid, NS3 had the wrong coordinates...Marco would need to redo the whole thing (potentially) to change this coordinate tho so at the moment probably best to just remove NS3 from the analysis (correct coords: NT1 - Lat  (-17.37439), Long(179.42183); NS3 - Lat (-17.33784), Long(179.44673))
 #NS3 does show up!!! should i remove it??? probably??
+#1.21.2022: removing NS3
 
 #do they have the same site ordering?
 #note: greiner_coordinatesfromalldata_10.19.2021 is the file that I sent Marco that has the original coordinates and he sent me back greiner_coordinatesfromalldata_11.17.2021_MA which has the shifted coordinates that he used to perform the simulation (he used the original coordinates from the 10.19.2021 file to determine the landing points), the site ordering in both of these should be the same
@@ -19,13 +20,13 @@ coordinates_alt <- read.csv("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivi
 setequal(coordinates$site, coordinates_alt$site) #TRUE, so yes...they do have the same site ordering
 
 #at what row are the dupsites located in
-dupcoords <- which(coordinates$site %in% dupsites) #302 303 304 305 306 307 308 309 310 311 312 313 429 430
+dupcoords <- which(coordinates$site %in% dupsites) #302 303 304 305 306 307 308 309 310 311 312 313 340 429 430
 #need to only remove one of each duplicate
-coordinates[dupcoords,] #could remove 303, 305, 307, 309, 311, 313, 430 
-remov_coords <- c(303,305,307,309,311,313,420)
+coordinates[dupcoords,] #could remove 303, 305, 307, 309, 311, 313, 340, 430 
+remov_coords <- c(303,305,307,309,311,313,340,430)
 newcoordinates <- coordinates_alt[-remov_coords,]
 #save new coordinates files, using the 10.19.2021 coordinates since those aren't shifted
-save(newcoordinates, file = "~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.11.2022.RData")
+save(newcoordinates, file = "~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.25.2022.RData")
 
 
 #how do i remove just those rows and columns from a matrix?
@@ -39,8 +40,7 @@ dummy[-remov_rows, -remov_rows] #yes this works
 #what dimension are the matrices that Marco sent for each month?
 load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/Cmatrices_0.001deg/Cmatrices_2009_1.RData") #0.001 degree radius
 #str(Cmatrices[[2]][-remov_coords, -remov_coords]) #this seems to work here as well, good
-load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/Cmatrices_0.01degreeradius/Cmatrices_2009_1.RData") #559 x 559
-#Cmatrices[[27]]
+
 
 #note: moved the 0.01 degree ones into a 0.01 degree folder within 'ConnectivityMatrices_11.2021', so i don't have to change everything below. will move the 0.001 degree ones into a folder later if play with other buffers later
 
@@ -152,7 +152,7 @@ dev.off()
 #library(igraph)
 g <- graph.adjacency(as.matrix(weightedavgconnmat), weighted = TRUE) #8 = 40 day PLD, 12 = 60 day PLD, 26 = 130 day PLD
 #clusters(g,mode="weak") one really big cluster, lots of smaller ones
-load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.11.2022.RData") 
+load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.25.2022.RData") 
 coordinates <- newcoordinates
 coordinates$networks <- clusters(g,mode="weak")$membership
 print(paste("mixed PLD, Number of networks = ", clusters(g,mode="weak")$no))
@@ -199,11 +199,11 @@ weightedavgpld_strongnetworks_20092018conn <-
   coord_equal() +  theme_bw()
 ggsave(weightedavgpld_strongnetworks_20092018conn, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/strongnetworkmap_weightedaveragePLD.png"), bg = "transparent", height = 10, width = 10)
 
-#Load in the dataset with the 77 sites and the fish density + coral/macroalgal cover 
+#Load in the dataset with the 76 sites and the fish density + coral/macroalgal cover 
 #maybe do a merge based on the latitude and long.recenter? because can't regenerate the connectivity matrix based on fewer reefs, that will change the connectivity (i think??)
 load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ConnectivityMatrices_12.2021/wcsonly_benthicfish_jointsiteyrsonly_20172020_abridged.RData") #generated in Fiji_status/Fish Belt Vis/2021_fishbelt_thesisproject/FishBelt_generatefishoverviewmaps.Rmd
 
-masterdataframe_20172020_wcsonly_fishbenthic <- merge(wcsonly_benthicfish_jointsiteyrsonly_20172020_abridged, coordinates, by = c("latitude", "long.recenter", "site")) #77 rows :)
+masterdataframe_20172020_wcsonly_fishbenthic <- merge(wcsonly_benthicfish_jointsiteyrsonly_20172020_abridged, coordinates, by = c("latitude", "long.recenter", "site")) #76 rows :)
 
 
 wcsonly_fishbenthic_20172020_weightedavgpld_strongnetworks <-  

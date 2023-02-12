@@ -38,7 +38,7 @@ sitevector <- benthicfish_masterdataset$site
 load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/weightedavgconnmat.RData") 
 #^weightedavgconnmat - for all sites
 #subset it to only the 76 sites with both benthic cover and fish abundance data
-load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.11.2022.RData") #newcoordinates; abridged coordinate file that corresponds with conn mat above, site order-wise
+load("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/BaseSimulationWork_1.2022/greiner_coordinatesfromalldata_dupsremoved_1.25.2022.RData") #newcoordinates; abridged coordinate file that corresponds with conn mat above, site order-wise
 coordinates <- newcoordinates
 jointsite_rows <- which(coordinates$site %in% sitevector)
 jointsite_coral_weightedavgconnmat <- weightedavgconnmat[jointsite_rows, jointsite_rows]
