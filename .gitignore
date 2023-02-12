@@ -1,3 +1,12 @@
+*.csv
+*.dbf
+*.prj
+*.shp
+*.shx
+*.rds
+*.RData
+*.png
+**/*.csv
 **/*.dbf
 **/*.prj
 **/*.shp
