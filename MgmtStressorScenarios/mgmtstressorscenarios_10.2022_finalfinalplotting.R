@@ -558,7 +558,6 @@ malgcover_mortalitylevel_dvaronlyabr_w25_grazcol <- ggplot(finalcov_restr, aes(x
 #facet_wrap(~graz)
 ggsave(malgcover_mortalitylevel_dvaronlyabr_w25_grazcol, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/MgmtStressorScenarios/plots_dvarmgmtonly/10.2022_finalplots/malgcover_mortalitylevel_dvaronlyabr_w25_grazcol_11.8.2022.png"), bg = "transparent", height = 10, width = 10)
 
-
 #immigration - emigration level
 #probably makes most sense to plot immigration-emigration rather than either one independently
 #pc_val - pcout_val for coral
@@ -576,6 +575,16 @@ coralcover_coralmovementlevel_dvaronlyabr_w25_grazcol <- ggplot(finalcov_restr, 
   theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size=20))
 #facet_wrap(~graz)
 ggsave(coralcover_coralmovementlevel_dvaronlyabr_w25_grazcol, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/MgmtStressorScenarios/plots_dvarmgmtonly/10.2022_finalplots/coralcover_coralmovementlevel_dvaronlyabr_w25_grazcol_11.8.2022.png"), bg = "transparent", height = 10, width = 10)
+
+###why are we seeing those weird lines on the coral cover vs mortality rate plot
+#colouring by intervention doesn't clarify anything
+#plot(y=(finalcov_restr$coral_cover[finalcov_restr$graz == 4]*100), x = finalcov_restr$mortalitylevel[finalcov_restr$graz == 4], col = finalcov_restr$scenario[finalcov_restr$graz == 4])
+#by coral connectivity level - they all seem grouped by connectivity level (lowest to highest in that fan)
+#ggplot(finalcov_restr[finalcov_restr$graz == 4,], aes(x = mortalitylevel, y = coral_cover*100, color = coralmovementlevel)) +
+#  geom_point(size=3)+
+#  ylab("% Coral Cover")+
+#  xlab("Mortality Rate")+ 
+#  theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size=20))
 
 
 #plot final coral cover basedvar, using consistent colours

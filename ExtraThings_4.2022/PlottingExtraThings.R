@@ -53,7 +53,9 @@ benthicfish_masterdataset_detherbs <- merge(benthicfish_masterdataset_detherbs, 
 
 benthicfish_masterdataset_detherbs$malg_density <- benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_macroalgae
 benthicfish_masterdataset_detherbs$malg_density[is.na(benthicfish_masterdataset_detherbs$malg_density)] <- 0
-benthicfish_masterdataset_detherbs$comb_grazinglevel <- (benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_detritivore + benthicfish_masterdataset_detherbs$malg_density)/(largest_detherbabundance+largest_malgherbabundance)
+#NEW 5.6.2023: divide the malg herb density by the malg herb max and the det herb density by the det herb max
+benthicfish_masterdataset_detherbs$comb_grazinglevel <- (benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_detritivore/largest_detherbabundance) + (benthicfish_masterdataset_detherbs$malg_density/largest_malgherbabundance)
+#OLD: benthicfish_masterdataset_detherbs$comb_grazinglevel <- (benthicfish_masterdataset_detherbs$biomass_kgha_trophic_group_avg_herbivore_detritivore + benthicfish_masterdataset_detherbs$malg_density)/(largest_detherbabundance+largest_malgherbabundance)
 
 benthicfish_masterdataset <- benthicfish_masterdataset_detherbs 
 
@@ -195,7 +197,7 @@ ggsave(InitialMalg_75Reefs_4.2022, filename = paste0("~/GitHub/PhDThesisProjects
 #Plotting Total Herbivore Density (det herbs + malg herbs)
 benthicfish_masterdataset_noNAs <- benthicfish_masterdataset
 benthicfish_masterdataset_noNAs$biomass_kgha_trophic_group_avg_herbivore_macroalgae[is.na(benthicfish_masterdataset_noNAs$biomass_kgha_trophic_group_avg_herbivore_macroalgae)] <- 0
-  
+
 TotalHerbivores_75Reefs_4.2022 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
@@ -223,19 +225,20 @@ for(i in 1:26){
 }
 col_retention <- retention
 
+#5.6.2023: realized i flipped pc and pm below so re-ran
 #6.28.2022: map of inputs to each coral reef (coral and malg)
 pc_val <- pm_val <- pcout_val <- pmout_val <- rep(NA,length(sitevector))
 for(i in 1:length(sitevector)){
-  pm_val[i] <- sum(jointsite_coral_weightedavgconnmat[i,]) #sum of inputs to i (coral), sum row i
+  pc_val[i] <- sum(jointsite_coral_weightedavgconnmat[i,]) #sum of inputs to i (coral), sum row i
   #pc_val[i] <- sum(jointsite_malg_weightedavgconnmat[i,]) #sum of inputs to i (macroalgae)
-  pc_val[i] <- sum(jointsite_malg_smallPLDconnmat[i,]) #sum of inputs to i (macroalgae)
+  pm_val[i] <- sum(jointsite_malg_smallPLDconnmat[i,]) #sum of inputs to i (macroalgae)
   pcout_val[i] <- sum(jointsite_coral_weightedavgconnmat[,i])
   pmout_val[i] <- sum(jointsite_malg_smallPLDconnmat[,i])
 }
 benthicfish_masterdataset$coral_inputlevels <- pc_val
 benthicfish_masterdataset$malg_inputlevels <- pm_val
 
-CoralInputMap_75Reefs_6.2022 <-  
+CoralInputMap_75Reefs_5.2023 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Coral Input Map"))+
@@ -248,9 +251,9 @@ CoralInputMap_75Reefs_6.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(CoralInputMap_75Reefs_6.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ExtraThings_4.2022/CoralInputMap_75Reefs_6.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(CoralInputMap_75Reefs_5.2023, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ExtraThings_4.2022/CoralInputMap_75Reefs_5.2023.png"), bg = "transparent", height = 10, width = 10)
 
-MalgInputMap_75Reefs_6.2022 <-  
+MalgInputMap_75Reefs_5.2023 <-  
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Malg Input Map"))+
@@ -263,12 +266,13 @@ MalgInputMap_75Reefs_6.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(MalgInputMap_75Reefs_6.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ExtraThings_4.2022/MalgInputMap_75Reefs_6.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(MalgInputMap_75Reefs_5.2023, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ExtraThings_4.2022/MalgInputMap_75Reefs_5.2023.png"), bg = "transparent", height = 10, width = 10)
 
+#5.2023 - replotting net coral migration
 #12.2022 - plotting net coral migration
 benthicfish_masterdataset$netcoralmigration <- pc_val - pcout_val
 
-NetCoralMigration_75Reefs_12.2022 <- 
+NetCoralMigration_75Reefs_5.2023 <- 
   ggplot(aes(x = long, y = lat), data = worldmap) + 
   geom_polygon(aes(group = group), fill="#f9f9f9", colour = "grey65") +
   xlab("Longitude") + ylab("Latitude")+ ggtitle(paste("Net Coral Migration Map"))+
@@ -281,7 +285,7 @@ NetCoralMigration_75Reefs_12.2022 <-
                      breaks = seq(160, 190, 10),
                      labels = c(160, 170, "180/-180", -170)) +
   coord_equal() +  theme_bw()
-ggsave(NetCoralMigration_75Reefs_12.2022, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ExtraThings_4.2022/NetCoralMigration_75Reefs_12.2022.png"), bg = "transparent", height = 10, width = 10)
+ggsave(NetCoralMigration_75Reefs_5.2023, filename = paste0("~/GitHub/PhDThesisProjects/Fiji_StabilityConnectivitySimulation/ExtraThings_4.2022/NetCoralMigration_75Reefs_5.2023.png"), bg = "transparent", height = 10, width = 10)
 
 
 

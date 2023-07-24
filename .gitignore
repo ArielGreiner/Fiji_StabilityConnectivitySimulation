@@ -14,3 +14,4 @@
 **/*.rds
 **/*.RData
 **/*.png
+.Rproj.user
